@@ -37,7 +37,7 @@ RUN mkdir /pkg && \
 FROM debian:stable-slim
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libc6 libglib2.0-0 libhyperscan5 libicu63 libluajit-5.1-2 libsodium23 libsqlite3-0 libssl1.1 libunwind8 && \
+    apt-get install -y --no-install-recommends ca-certificates libc6 libglib2.0-0 libhyperscan5 libicu63 libluajit-5.1-2 libsodium23 libsqlite3-0 libssl1.1 libunwind8 && \
     apt-get clean
 
 COPY --from=rspamd /pkg/ /
@@ -46,6 +46,8 @@ COPY --from=s6-overlay /pkg/ /
 RUN groupadd -g 9993 _rspamd && \
     useradd -u 9993 -d /usr/local/lib/rspamd -g _rspamd -s /bin/false _rspamd
 
+RUN mkdir /var/lib/rspamd /var/log/rspamd && \
+    chown _rspamd:_rspamd /var/lib/rspamd /var/log/rspamd
 
 COPY rootfs/ /
 
